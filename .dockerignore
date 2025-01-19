@@ -1,0 +1,44 @@
+# Version control
+.git/
+.gitignore
+.dockerignore
+
+# Python
+__pycache__/
+*.py[cod]
+
+# Environment and secrets
+.env
+venv/
+.venv/
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Runner directories - don't copy any nested contents
+runner/input/**/*
+runner/output/**/*
+runner/logs/**/*
+runner/cache/**/*
+
+# Data files in runner directories
+runner/**/*.csv
+runner/**/*.xlsx
+runner/**/*.parquet
+runner/**/*.pickle
+runner/**/*.pkl
+runner/**/*.json
+runner/**/*.jsonl
+runner/**/*.log
+
+# Temporary files anywhere
+**/*.tmp
+**/*.bak

@@ -1,0 +1,48 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Environment and secrets
+.env
+venv/
+.venv/
+
+# IDE and editor files
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Jupyter
+.ipynb_checkpoints/
+
+# Runner directories - ignore all nested contents
+runner/input/**/*
+runner/output/**/*
+runner/logs/**/*
+runner/cache/**/*
+
+# Data files in runner directories
+runner/**/*.csv
+runner/**/*.xlsx
+runner/**/*.parquet
+runner/**/*.pickle
+runner/**/*.pkl
+runner/**/*.json
+runner/**/*.jsonl
+runner/**/*.log
+
+# Temporary files anywhere
+**/*.tmp
+**/*.bak
+
+# scripts/flattenmd.sh output
+files.md
+
+# Variable-filled init.sql shouldn't be committed, instead only the template should be committed.
+postgres/init.sql
+
+# Keep all directory structures
+!*/
