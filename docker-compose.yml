@@ -26,6 +26,7 @@ services:
     environment:
       - PYTHONPATH=/app
     user: "${CURRENT_UID}:${CURRENT_GID}"  # Use the values passed from rebuild.sh
+    command: sleep infinity  # Keep container running
     volumes:
       - ./runner:/app
     depends_on:

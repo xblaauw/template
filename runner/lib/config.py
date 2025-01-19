@@ -33,10 +33,19 @@ def setup_logger(script_name: str = None) -> logging.Logger:
         frame = inspect.stack()[1]
         # Get the full path of the calling script
         calling_script = Path(frame.filename)
-        # Get project root (parent of lib directory)
-        project_root = Path(__file__).parent.parent
-        # Get relative path from project root (e.g. 'scripts/demo.py')
-        script_name = str(calling_script.relative_to(project_root))
+        
+        try:
+            # Check if we're running in Jupyter
+            if 'ipykernel' in sys.modules:
+                script_name = 'jupyter_notebook'
+            else:
+                # Get project root (parent of lib directory)
+                project_root = Path(__file__).parent.parent
+                # Get relative path from project root (e.g. 'scripts/demo.py')
+                script_name = str(calling_script.relative_to(project_root))
+        except ValueError:
+            # If we can't get a relative path, use the filename
+            script_name = calling_script.name
 
     logger = logging.getLogger(script_name)  # Use full path for logger name
     
@@ -52,7 +61,7 @@ def setup_logger(script_name: str = None) -> logging.Logger:
     log_dir = Path("logs")
     log_dir.mkdir(exist_ok=True)
     
-    # Create file handler with timestamp for the run, not per script, using .jsonl extension
+    # Create file handler with timestamp for the run, not per script
     file_handler = logging.FileHandler(
         log_dir / f"app_{datetime.now().strftime('%Y%m%d_%H%M%S')}.jsonl",
         mode='a'  # Append mode
