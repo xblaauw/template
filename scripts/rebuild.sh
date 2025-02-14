@@ -7,11 +7,6 @@ export CURRENT_UID CURRENT_GID
 
 source .env
 
-SCHEMA_NAME=${POSTGRES_SCHEMA:-default_schema}
-
-# Replace placeholder and output to a file
-sed "s/{{POSTGRES_SCHEMA}}/$SCHEMA_NAME/g" postgres/init.template.sql > postgres/init.sql
-
 docker compose down
 
 # Cleaning artifacts...

@@ -1,12 +1,8 @@
 services:
   postgres:
     image: postgres:16
-    environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB}
-    ports:
-      - "${POSTGRES_PORT}:5432"
+    env_file:
+      - .env
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
@@ -17,20 +13,44 @@ services:
       retries: 5
       start_period: 10s
 
-  runner:
+  api:
     build:
-      context: ./runner
+      context: ./api
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    user: "${CURRENT_UID}:${CURRENT_GID}"  # Use the values passed from rebuild.sh
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./api:/app
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 120s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
+
+  frontend:
+    build:
+      context: ./frontend
       dockerfile: Dockerfile
     env_file:
       - .env
     environment:
       - PYTHONPATH=/app
     user: "${CURRENT_UID}:${CURRENT_GID}"  # Use the values passed from rebuild.sh
-    command: sleep infinity  # Keep container running
+    ports:
+      - "8501:8501"
     volumes:
-      - ./runner:/app
+      - ./frontend:/app
     depends_on:
       postgres:
+        condition: service_healthy
+      api:
         condition: service_healthy
 
 volumes:

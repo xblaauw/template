@@ -1,9 +1,10 @@
 #!/bin/bash
+
 set -e  # Exit on any error
 
 # List all Python scripts in order of execution
 SCRIPTS=(
-    "scripts/demo.py"
+    # "app.py"
     # Add more scripts here as needed
 )
 
@@ -18,5 +19,7 @@ for script in "${SCRIPTS[@]}"; do
         exit 1
     fi
 done
+
+streamlit run app.py
 
 echo "All scripts completed successfully"

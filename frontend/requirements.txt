@@ -12,3 +12,4 @@ ipykernel
 jupyter
 black
 flake8
+streamlit
