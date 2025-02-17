@@ -1,0 +1,3 @@
+DEFAULT_PAGE_CONFIG = {
+    
+}

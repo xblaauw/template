@@ -1,28 +1,10 @@
 import streamlit as st
+from streamlit import session_state as state
 
-st.title('Welcome to Course Platform')
+from lib import config
 
-# Add this after the existing "Register Now" button
-if st.button("Login"):
-    st.switch_page("routes/login.py")
+st.set_page_config(**config.DEFAULT_PAGE_CONFIG)
 
-st.markdown("""
-### About Our Platform
 
-Our platform helps organizations manage daily learning activities for their teams.
+st.title('test')
 
-#### How it works:
-1. Organization admins register and verify their account
-2. Add team members' email addresses
-3. Team members receive daily questions via email
-4. Track progress and engagement through the admin dashboard
-
-#### Features:
-- Easy team member management
-- Daily automated questions
-- Progress tracking
-- Simple one-click responses for team members
-""")
-
-if st.button("Register Now"):
-    st.switch_page("routes/registration.py")
