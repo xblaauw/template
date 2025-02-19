@@ -9,7 +9,7 @@ services:
      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
-      - ./postgres/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./postgres/initdb.d:/docker-entrypoint-initdb.d
       - ./postgres/postgresql.conf:/etc/postgresql/postgresql.conf
     command: ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]
     healthcheck:
@@ -19,46 +19,48 @@ services:
       retries: 5
       start_period: 10s
 
-  # api:
-  #   build:
-  #     context: ./api
-  #     dockerfile: Dockerfile
-  #   env_file:
-  #     - .env
-  #   user: "${CURRENT_UID}:${CURRENT_GID}"  # Use the values passed from rebuild.sh
-  #   depends_on:
-  #     postgres:
-  #       condition: service_healthy
-  #   ports:
-  #     - "8000:8000"
-  #   volumes:
-  #     - ./api:/app
-  #   command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
-  #   healthcheck:
-  #     test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
-  #     interval: 120s
-  #     timeout: 10s
-  #     retries: 5
-  #     start_period: 30s
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    user: "${CURRENT_UID}:${CURRENT_GID}"  # Use the values passed from rebuild.sh
+    depends_on:
+      postgres:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./api:/app
+      - ./media:/app/media
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload --log-level ${API_LOG_LEVEL}
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 30s
 
-  # frontend:
-  #   build:
-  #     context: ./frontend
-  #     dockerfile: Dockerfile
-  #   env_file:
-  #     - .env
-  #   environment:
-  #     - PYTHONPATH=/app
-  #   user: "${CURRENT_UID}:${CURRENT_GID}"  # Use the values passed from rebuild.sh
-  #   ports:
-  #     - "8501:8501"
-  #   volumes:
-  #     - ./frontend:/app
-  #   depends_on:
-  #     postgres:
-  #       condition: service_healthy
-  #     api:
-  #       condition: service_healthy
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    env_file:
+      - .env
+    environment:
+      - PYTHONPATH=/app
+    user: "${CURRENT_UID}:${CURRENT_GID}"  # Use the values passed from rebuild.sh
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./frontend:/app
+      - ./media:/app/media
+    depends_on:
+      postgres:
+        condition: service_healthy
+      api:
+        condition: service_healthy
 
 volumes:
   postgres_data:

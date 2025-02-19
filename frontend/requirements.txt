@@ -13,3 +13,4 @@ jupyter
 black
 flake8
 streamlit
+streamlit-cookies-controller
